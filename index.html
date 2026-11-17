@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مبادرة التسامح</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: calm single column; the ladder of tolerance rises as ascending bars; each section a quiet sheet on a misty ground. */
+:root{
+  --ink:#14263D;
+  --mist:#EAF1F5;
+  --sheet:#FFFFFF;
+  --teal:#0E7C86;
+  --amber:#E2A13B;
+  --rose:#B4474F;
+  --line:#CFDCE4;
+  --soft:#5A6E80;
+  --f-display:"Amiri","Traditional Arabic","Geeza Pro",serif;
+  --f-body:"IBM Plex Sans Arabic","SF Arabic","Geeza Pro",system-ui,sans-serif;
+  --f-quran:"Amiri","Traditional Arabic","Geeza Pro",serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--mist);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.9;-webkit-text-size-adjust:100%}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;line-height:1.5;text-wrap:balance}
+h2{font-size:31px;margin-bottom:6px}
+.eyebrow{font-size:14px;color:var(--teal);font-weight:600}
+section{padding:34px 0 10px}
+.sheet{background:var(--sheet);border:1px solid var(--line);border-radius:18px;padding:22px 20px;margin-top:16px}
+.lead{color:var(--soft)}
+
+.hero{background:var(--ink);color:#fff;padding:44px 0 40px;position:relative;overflow:hidden}
+.hero svg{position:absolute;left:-60px;top:-40px;width:300px;opacity:.9}
+.hero .wrap{position:relative}
+.hero h1{font-size:60px;margin:2px 0 6px}
+.hero p.sub{color:#C9D8E3;max-width:34em}
+.verse{font-family:var(--f-quran);font-size:25px;line-height:2.2;text-wrap:pretty}
+.hero .verse{margin-top:22px;padding:16px 18px;border-radius:14px;background:rgba(255,255,255,.08);border-inline-start:4px solid var(--amber)}
+.ref{font-family:var(--f-body);font-size:14px;color:var(--amber);display:block;margin-top:2px}
+.nav{display:flex;gap:8px;overflow-x:auto;padding:12px 18px;background:var(--sheet);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.nav button{white-space:nowrap;border:1px solid var(--line);background:var(--mist);border-radius:999px;padding:4px 14px;font-size:15px;cursor:pointer}
+.nav button:hover{border-color:var(--teal);color:var(--teal)}
+
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:block;width:100%;text-align:start;border:1.5px solid var(--line);background:var(--sheet);border-radius:14px;padding:11px 16px;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--teal)}
+.opt.sel{border-color:var(--teal);background:#E4F3F4}
+.opt.ok{border-color:#2E8B57;background:#E6F4EC}
+.opt.bad{border-color:var(--rose);background:#F8E9EA}
+.opt[disabled]{cursor:default}
+.note{margin-top:12px;padding:12px 16px;border-radius:12px;background:#FFF4DE;border-inline-start:4px solid var(--amber);display:none}
+.note.show{display:block}
+
+.goals{display:grid;gap:12px;margin-top:14px}
+.goal{display:flex;gap:14px;align-items:flex-start;background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.goal b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--teal);color:#fff;display:grid;place-items:center;font-family:var(--f-display);font-size:20px}
+.goal.special{border-color:var(--amber);background:#FFF9EC}
+.goal.special b{background:var(--amber);color:var(--ink)}
+
+.two{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.two .sheet{margin-top:14px}
+.two h3{font-size:23px;color:var(--teal)}
+@media(max-width:560px){.two{grid-template-columns:1fr}.hero h1{font-size:50px}h2{font-size:27px}}
+
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:end;margin-top:18px;height:200px}
+.step{border:0;border-radius:12px 12px 4px 4px;background:#BCD9DC;color:var(--ink);cursor:pointer;padding:10px 4px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px;font-weight:600;transition:.2s}
+.step .n{font-family:var(--f-display);font-size:26px;line-height:1.2}
+.step:nth-child(1){height:46%}.step:nth-child(2){height:62%}.step:nth-child(3){height:80%}.step:nth-child(4){height:100%}
+.step[aria-selected="true"]{background:var(--teal);color:#fff}
+.stepbody{margin-top:12px}
+.stepbody h3{font-size:25px}
+.tbtn{margin-top:12px;border:1.5px solid var(--teal);color:var(--teal);background:transparent;border-radius:999px;padding:4px 18px;cursor:pointer;font-weight:600}
+.tbtn:hover{background:var(--teal);color:#fff}
+.meaning{display:none;margin-top:10px;padding:12px 16px;border-radius:12px;background:#E4F3F4}
+.meaning.show{display:block}
+.warn{margin-top:18px;background:#FBEDEE;border:1px solid #E9C3C6;border-radius:16px;padding:16px 18px}
+.warn h3{color:var(--rose);font-size:24px}
+.tag{display:inline-block;font-size:13px;background:var(--mist);border-radius:999px;padding:0 10px;color:var(--teal);font-weight:600}
+
+.ayah .verse{margin-top:6px}
+.tf{display:none;margin-top:10px;padding:12px 16px;border-radius:12px;background:#E4F3F4}
+.tf.show{display:block}
+.tf blockquote{font-family:var(--f-quran);font-size:20px;line-height:2}
+.src{font-size:14px;color:var(--soft)}
+.learn{margin-top:8px;color:var(--teal);font-weight:600}
+
+.hadith{font-family:var(--f-quran);font-size:24px;line-height:2.1;margin:6px 0}
+
+.story h3{font-size:26px}
+.part{display:none}
+.part.on{display:block}
+.ctr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.dots{display:flex;gap:6px}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--teal)}
+
+.incl{border:2px solid var(--amber);background:#FFFCF4;border-radius:18px;padding:20px 18px;margin-top:16px}
+.q-title{font-weight:600;margin-top:4px}
+.q-card{margin-top:18px;padding-top:14px;border-top:1px dashed var(--line)}
+.q-card:first-of-type{border-top:0;padding-top:0}
+.fb{margin-top:10px;padding:10px 14px;border-radius:12px;display:none}
+.fb.show{display:block}
+.fb.g{background:#E6F4EC}.fb.r{background:#F8E9EA}
+
+.score{font-family:var(--f-display);font-size:26px;color:var(--teal);margin-top:14px;display:none}
+.score.show{display:block}
+.btn{border:0;background:var(--teal);color:#fff;border-radius:999px;padding:9px 26px;font-weight:600;cursor:pointer;margin-top:14px}
+.btn:hover{background:#0B656D}
+.btn.alt{background:transparent;color:var(--teal);border:1.5px solid var(--teal)}
+.btn.alt:hover{background:var(--teal);color:#fff}
+
+.field{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;background:#fff;margin-top:8px}
+.field:focus{border-color:var(--teal);outline:none}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:10px 4px;cursor:pointer}
+.chk input{width:22px;height:22px;margin-top:5px;accent-color:var(--teal);flex:none}
+.err{color:var(--rose);margin-top:8px;display:none}
+.err.show{display:block}
+.card{display:none;margin-top:18px;background:var(--ink);color:#fff;border-radius:20px;padding:26px 22px;text-align:center;border:3px double var(--amber)}
+.card.show{display:block}
+.card h3{font-size:32px;color:var(--amber)}
+.card .nm{font-family:var(--f-display);font-size:32px;margin:6px 0}
+.card ul{list-style:none;text-align:start;margin:12px auto;max-width:28em}
+.card li::before{content:"◆";color:var(--amber);margin-inline-end:10px;font-size:12px}
+
+.refs{list-style:none;counter-reset:r}
+.refs li{counter-increment:r;padding:6px 0;border-bottom:1px solid var(--line);font-size:15px}
+.refs li::before{content:counter(r,arabic-indic) " ـ ";color:var(--teal);font-weight:700}
+footer{background:var(--ink);color:#C9D8E3;margin-top:40px;padding:30px 0;text-align:center}
+footer b{color:#fff;font-family:var(--f-display);font-size:26px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <svg viewBox="0 0 300 300" aria-hidden="true" fill="none">
+    <circle cx="110" cy="130" r="100" stroke="#E2A13B" stroke-width="2" opacity=".5"/>
+    <circle cx="170" cy="130" r="100" stroke="#8FD0D6" stroke-width="2" opacity=".5"/>
+    <circle cx="140" cy="130" r="48" fill="#0E7C86" opacity=".35"/>
+  </svg>
+  <div class="wrap">
+    <span class="eyebrow" style="color:#E2A13B">مبادرة توعوية</span>
+    <h1>التَّسَامُح</h1>
+    <p class="sub">لغرس قيمة التسامح لدى طالبات المرحلة الثانوية. خُلُقٌ يجعل القلب نقيًّا، والصفَّ متآلفًا، والمدرسة بيتًا واحدًا.</p>
+    <p class="verse">﴿وَلْيَعْفُوا وَلْيَصْفَحُوا ۗ أَلَا تُحِبُّونَ أَن يَغْفِرَ اللَّهُ لَكُمْ﴾<span class="ref">سورة النور: ٢٢</span></p>
+  </div>
+</header>
+
+<nav class="nav" aria-label="أقسام الصفحة">
+  <button data-go="s-goals">الأهداف</button>
+  <button data-go="s-meaning">المعنى</button>
+  <button data-go="s-quran">القرآن</button>
+  <button data-go="s-hadith">السنة</button>
+  <button data-go="s-stories">قصص</button>
+  <button data-go="s-cases">مواقف</button>
+  <button data-go="s-incl">طالبات الدمج</button>
+  <button data-go="s-quiz">اختبار</button>
+  <button data-go="s-pledge">العهد</button>
+</nav>
+
+<main class="wrap">
+
+<section id="s-poll">
+  <span class="eyebrow">سؤال قبل أن نبدأ</span>
+  <h2>هل سامحتِ أحدًا هذا الأسبوع؟</h2>
+  <div class="opts" id="poll"></div>
+  <div class="note" id="pollNote"></div>
+</section>
+
+<section id="s-goals">
+  <h2>أهداف المبادرة</h2>
+  <div class="goals">
+    <div class="goal"><b>١</b><span>أن تعرف الطالبة معنى التسامح ومراتبه.</span></div>
+    <div class="goal"><b>٢</b><span>أن تستدل عليه بآيات وأحاديث صحيحة.</span></div>
+    <div class="goal"><b>٣</b><span>أن تختار التصرف المتسامح في المواقف اليومية.</span></div>
+    <div class="goal"><b>٤</b><span>أن تلتزم بعهد التسامح مع زميلاتها.</span></div>
+    <div class="goal special"><b>٥</b><span>تعزيز قيم التسامح والاحترام لدى الطالبات، وتنمية الوعي بمراعاة احتياجات طالبات الدمج وتقبّل اختلاف قدراتهن.</span></div>
+  </div>
+</section>
+
+<section id="s-meaning">
+  <span class="eyebrow">المعنى</span>
+  <h2>ما التسامح؟</h2>
+  <div class="two">
+    <div class="sheet"><h3>في اللغة</h3><p>من «السَّماحة»: وهي الجود والسهولة ولين الجانب. يقال: رجلٌ سَمْح، أي سهلٌ كريمٌ في معاملته.</p></div>
+    <div class="sheet"><h3>في المعنى</h3><p>أن تترك الطالبة مؤاخذة من أخطأ في حقها وهي قادرة، وتعامل الناس بلين ورفق، دون أن تحمل في قلبها حقدًا.</p></div>
+  </div>
+
+  <h2 style="margin-top:30px">سُلَّم التسامح</h2>
+  <p class="lead">تأمّلي هذه الدرجات المأخوذة من آيات القرآن، واضغطي على كل درجة لتعرفي معناها.</p>
+  <div class="ladder" role="tablist" id="ladder"></div>
+  <div class="sheet stepbody" id="stepBody"></div>
+
+  <div class="warn">
+    <h3>التسامح ليس ضعفًا</h3>
+    <p>المتسامحة قويّة؛ لأنها تملك نفسها عند الغضب. والتسامح لا يعني السكوت عن الخطأ الذي يضرّ، بل نُبلِّغ المعلمة بأدب، ونسامح في قلوبنا.</p>
+  </div>
+</section>
+
+<section id="s-quran">
+  <span class="eyebrow">من القرآن الكريم</span>
+  <h2>آيات عن التسامح</h2>
+  <p class="lead">اقرئي الآية، ثم اضغطي «افتحي التفسير» لتعرفي معناها من كتب التفسير المعتمدة.</p>
+  <div id="ayat"></div>
+</section>
+
+<section id="s-hadith">
+  <span class="eyebrow">من السنة النبوية</span>
+  <h2>أحاديث عن التسامح</h2>
+  <p class="lead">أحاديث صحيحة من الصحيحين وصحيح مسلم، مع ما نتعلمه منها.</p>
+  <div id="hadiths"></div>
+</section>
+
+<section id="s-stories">
+  <span class="eyebrow">قصص ملهمة</span>
+  <h2>قصص حقيقية من القرآن والسيرة</h2>
+  <p class="lead">تابعيها خطوة بخطوة.</p>
+  <div id="stories"></div>
+</section>
+
+<section id="s-cases">
+  <span class="eyebrow">من يومنا في المدرسة</span>
+  <h2>ماذا تفعلين؟</h2>
+  <p class="lead">اختاري التصرف الذي ترينه صحيحًا.</p>
+  <div id="cases"></div>
+</section>
+
+<section id="s-incl">
+  <span class="eyebrow">اهتمام خاص</span>
+  <h2>التسامح مع زميلاتنا من طالبات الدمج</h2>
+  <div class="incl" id="incl"></div>
+</section>
+
+<section id="s-quiz">
+  <span class="eyebrow">اختبار</span>
+  <h2>اختبري نفسك</h2>
+  <div id="quiz"></div>
+  <div class="score" id="score"></div>
+  <button class="btn alt" id="quizReset" style="display:none">أعيدي الاختبار</button>
+</section>
+
+<section id="s-pledge">
+  <span class="eyebrow">الخطوة الأخيرة</span>
+  <h2>عهد التسامح</h2>
+  <div class="sheet">
+    <label for="pname" class="q-title">اكتبي اسمك</label>
+    <input class="field" id="pname" type="text" autocomplete="off" placeholder="الاسم">
+    <p class="q-title" style="margin-top:16px">اختاري ما تعاهدين نفسك عليه:</p>
+    <div id="pledgeList"></div>
+    <div class="err" id="perr"></div>
+    <button class="btn" id="sign">أوقّع العهد</button>
+    <div class="card" id="pcard" aria-live="polite">
+      <h3>عهد التسامح</h3>
+      <p>أنا</p>
+      <div class="nm" id="pcName"></div>
+      <p>أعاهد الله ثم نفسي أن:</p>
+      <ul id="pcList"></ul>
+      <p class="verse" style="font-size:22px">﴿أَلَا تُحِبُّونَ أَن يَغْفِرَ اللَّهُ لَكُمْ﴾</p>
+      <p id="pcSchool" style="color:#C9D8E3;font-size:15px"></p>
+    </div>
+  </div>
+</section>
+
+<section id="s-refs">
+  <h2>المراجع</h2>
+  <div class="sheet">
+    <ol class="refs">
+      <li>القرآن الكريم.</li>
+      <li>تيسير الكريم الرحمن في تفسير كلام المنان، عبد الرحمن بن ناصر السعدي (ت ١٣٧٦هـ).</li>
+      <li>التفسير الميسر، مجمع الملك فهد لطباعة المصحف الشريف.</li>
+      <li>صحيح البخاري، محمد بن إسماعيل البخاري (ت ٢٥٦هـ).</li>
+      <li>صحيح مسلم، مسلم بن الحجاج النيسابوري (ت ٢٦١هـ).</li>
+      <li>الجمع بين الصحيحين، الحميدي (ت ٤٨٨هـ)، المكتبة الشاملة.</li>
+      <li>السنن الكبرى، البيهقي (ت ٤٥٨هـ)، المكتبة الشاملة.</li>
+      <li>شرح صحيح البخاري، ابن بطال (ت ٤٤٩هـ)، المكتبة الشاملة.</li>
+    </ol>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>مبادرة التسامح</b>
+    <div id="credits" style="margin-top:6px"></div>
+  </div>
+</footer>
+
+<script>
+/* أضيفي الأسماء هنا لتظهر في أسفل الصفحة. اتركيها فارغة لإخفائها */
+var CONFIG={school:"",teacher:"",principal:""};
+
+var $=function(s,r){return (r||document).querySelector(s)};
+var el=function(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e};
+
+document.querySelectorAll('.nav button').forEach(function(b){
+  b.addEventListener('click',function(){var t=document.getElementById(b.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
+});
+
+(function(){
+  var p=[];
+  if(CONFIG.school)p.push(CONFIG.school);
+  if(CONFIG.teacher)p.push('إعداد المعلمة: '+CONFIG.teacher);
+  if(CONFIG.principal)p.push('مديرة المدرسة: '+CONFIG.principal);
+  $('#credits').innerHTML=p.join('<br>');
+  $('#pcSchool').textContent=CONFIG.school||'';
+})();
+
+function choice(host,opts,onPick){
+  var done=false;
+  opts.forEach(function(o){
+    var b=el('button','opt',o.t);
+    b.type='button';
+    b.addEventListener('click',function(){
+      if(done)return;done=true;
+      host.querySelectorAll('.opt').forEach(function(x){x.disabled=true});
+      onPick(o,b,host);
+    });
+    host.appendChild(b);
+  });
+}
+function markWrong(s,list,b,x){
+  b.classList.add(x.c?'ok':'bad');
+  if(!x.c){var all=s.querySelectorAll('.opt');list.forEach(function(y,k){if(y.c)all[k].classList.add('ok')})}
+}
+
+/* poll */
+(function(){
+  var o=[
+    {t:'نعم',m:'ما أجمل قلبك! هذا هو التسامح. تعالي نتعرّف على أجره ومراتبه.'},
+    {t:'ليس بعد',m:'لا بأس، اليوم فرصة جميلة لتبدئي. تعالي نتعرّف على التسامح معًا.'}
+  ];
+  choice($('#poll'),o,function(x,b){
+    b.classList.add('sel');
+    var n=$('#pollNote');n.textContent=x.m;n.classList.add('show');
+  });
+})();
+
+/* ladder */
+var STEPS=[
+ {n:'١',t:'كَظْمُ الغيظ',d:'أن تمسكي غضبك ولا تُخرجيه بقول أو فعل.',v:'﴿وَالْكَاظِمِينَ الْغَيْظَ﴾',r:'آل عمران: ١٣٤'},
+ {n:'٢',t:'العَفْو',d:'أن تتركي حقك في معاقبة من أساء إليك.',v:'﴿وَالْعَافِينَ عَنِ النَّاسِ﴾',r:'آل عمران: ١٣٤'},
+ {n:'٣',t:'الصَّفْح',d:'أن تُزيلي أثر الخطأ من قلبك فلا تلومي ولا تعاتبي.',v:'﴿وَلْيَعْفُوا وَلْيَصْفَحُوا﴾',r:'النور: ٢٢'},
+ {n:'٤',t:'الإحسان',d:'أعلى الدرجات: أن تقابلي الإساءة بالإحسان.',v:'﴿وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ﴾ [آل عمران: ١٣٤]، و﴿ادْفَعْ بِالَّتِي هِيَ أَحْسَنُ﴾',r:'فصلت: ٣٤'}
+];
+(function(){
+  var host=$('#ladder'),body=$('#stepBody');
+  function show(i){
+    host.querySelectorAll('.step').forEach(function(b,j){b.setAttribute('aria-selected',j===i?'true':'false')});
+    var s=STEPS[i];
+    body.innerHTML='<span class="tag">الدرجة '+s.n+'</span><h3>'+s.t+'</h3><p>'+s.d+'</p><p class="verse" style="margin-top:6px">'+s.v+'</p><span class="src">'+s.r+'</span><p class="learn">ستجدين تفسير هذه الآيات في قسم القرآن.</p>';
+  }
+  STEPS.forEach(function(s,i){
+    var b=el('button','step','<span class="n">'+s.n+'</span>'+s.t);
+    b.type='button';b.setAttribute('role','tab');
+    b.addEventListener('click',function(){show(i)});
+    host.appendChild(b);
+  });
+  show(0);
+})();
+
+/* quran */
+var AYAT=[
+ {t:'وَلَا يَأْتَلِ أُولُو الْفَضْلِ مِنكُمْ وَالسَّعَةِ أَن يُؤْتُوا أُولِي الْقُرْبَىٰ وَالْمَسَاكِينَ وَالْمُهَاجِرِينَ فِي سَبِيلِ اللَّهِ ۖ وَلْيَعْفُوا وَلْيَصْفَحُوا ۗ أَلَا تُحِبُّونَ أَن يَغْفِرَ اللَّهُ لَكُمْ ۗ وَاللَّهُ غَفُورٌ رَّحِيمٌ',r:'سورة النور: ٢٢',
+  tf:'إذا عامَلْتُم عبيدَه بالعفو والصفح؛ عاملكم بذلك ... وفي هذه الآيةِ دليلٌ على النفقة على القريب، وأنَّه لا تُتْرَكُ النفقةُ والإحسانُ بمعصية الإنسان، والحثُّ على العفو والصفح ولو جرى منه ما جرى من أهل الجرائم.',s:'تفسير السعدي',l:'الجزاء من جنس العمل: من سامح الناس سامحه الله.'},
+ {t:'الَّذِينَ يُنفِقُونَ فِي السَّرَّاءِ وَالضَّرَّاءِ وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ ۗ وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ',r:'سورة آل عمران: ١٣٤',
+  tf:'الذين ينفقون أموالهم في اليسر والعسر، والذين يمسكون ما في أنفسهم من الغيظ بالصبر، وإذا قَدَروا عَفَوا عمَّن ظلمهم. وهذا هو الإحسان الذي يحب الله أصحابه.',s:'التفسير الميسر',l:'العفو يكون مع القدرة، وهو طريق لمحبة الله.'},
+ {t:'وَلَا تَسْتَوِي الْحَسَنَةُ وَلَا السَّيِّئَةُ ۚ ادْفَعْ بِالَّتِي هِيَ أَحْسَنُ فَإِذَا الَّذِي بَيْنَكَ وَبَيْنَهُ عَدَاوَةٌ كَأَنَّهُ وَلِيٌّ حَمِيمٌ',r:'سورة فصلت: ٣٤',
+  tf:'فإنْ قَطَعَكَ؛ فصِلْه، وإنْ ظلمكَ؛ فاعفُ عنه، وإن تكلَّم فيك غائباً أو حاضراً؛ فلا تقابِلْه، بل اعفُ عنه وعامِلْه بالقول الليِّن، وإن هَجَرَكَ وترك خطابك؛ فطيِّبْ له الكلام وابذلْ له السلام؛ فإذا قابلتَ الإساءة بالإحسان؛ حصل فائدةٌ عظيمةٌ.',s:'تفسير السعدي',l:'الكلمة الطيبة تحوّل الخصومة إلى صداقة.'},
+ {t:'خُذِ الْعَفْوَ وَأْمُرْ بِالْعُرْفِ وَأَعْرِضْ عَنِ الْجَاهِلِينَ',r:'سورة الأعراف: ١٩٩',
+  tf:'اقْبَلْ -أيها النبي أنت وأمتك- الفضل من أخلاق الناس وأعمالهم، ولا تطلب منهم ما يشق عليهم حتى لا ينفروا، وأْمر بكل قول حسن وفِعْلٍ جميل، وأعرض عن منازعة السفهاء ومساواة الجهلة الأغبياء.',s:'التفسير الميسر',l:'لا أدخل في جدال مع من يسيء؛ أُعرض عنه بهدوء.'}
+];
+(function(){
+  var h=$('#ayat');
+  AYAT.forEach(function(a){
+    var c=el('div','sheet ayah');
+    c.innerHTML='<p class="verse">﴿'+a.t+'﴾</p><span class="src">'+a.r+'</span>'+
+      '<div class="tf"><blockquote>«'+a.tf+'»</blockquote><p class="src">— '+a.s+'</p></div>'+
+      '<p class="learn">أتعلّم: '+a.l+'</p><button class="tbtn" type="button">افتحي التفسير</button>';
+    h.appendChild(c);
+    var b=$('.tbtn',c),t=$('.tf',c);
+    b.addEventListener('click',function(){var o=t.classList.toggle('show');b.textContent=o?'إخفاء التفسير':'افتحي التفسير'});
+  });
+})();
+
+/* hadith */
+var HAD=[
+ {t:'«ما نقصت صدقةٌ من مالٍ، وما زاد اللهُ عبدًا بعفوٍ إلا عزًّا، وما تواضع أحدٌ لله إلا رفعه الله»',k:'رواه مسلم (٢٥٨٨)',b:'من يعفو لا يُهان، بل يرفعه الله ويزيده عزًّا وكرامة.'},
+ {t:'«ليس الشديدُ بالصُّرَعة، إنما الشديدُ الذي يملك نفسه عند الغضب»',k:'متفق عليه',b:'القوية حقًّا هي التي تتحكم في غضبها، لا التي تغلب غيرها.'},
+ {t:'«لا يحلّ لمسلمٍ أن يهجر أخاه فوق ثلاث ليالٍ، يلتقيان فيُعرض هذا ويُعرض هذا، وخيرُهما الذي يبدأ بالسلام»',k:'متفق عليه',b:'الخصام لا يطول، والأفضل من تبدأ بالسلام وتكسر الحاجز.'},
+ {t:'«رحم اللهُ رجلًا سَمْحًا إذا باع، وإذا اشترى، وإذا اقتضى»',k:'رواه البخاري (٢٠٧٦)',b:'السماحة في كل المعاملات: في البيع والشراء وطلب الحقوق.'}
+];
+(function(){
+  var h=$('#hadiths');
+  HAD.forEach(function(x){
+    h.appendChild(el('div','sheet','<p class="src">قال رسول الله ﷺ:</p><p class="hadith">'+x.t+'</p><span class="tag">'+x.k+'</span><p class="learn">أتعلّم: '+x.b+'</p>'));
+  });
+})();
+
+/* stories */
+var STO=[
+ {h:'أبو بكر الصديق ومِسطَح',s:'مصدر القصة: تفسير السعدي لآية النور ٢٢',p:[
+  'كان <b>مِسطَح بن أُثاثة</b> قريبًا لأبي بكر الصديق رضي الله عنه، وكان فقيرًا من المهاجرين، وكان أبو بكر يُنفق عليه.',
+  'تكلّم مسطح بكلامٍ سيّئ في حادثة الإفك، فحزن أبو بكر وحلف ألّا يُنفق عليه بعد ذلك.',
+  'فأنزل الله: ﴿وَلْيَعْفُوا وَلْيَصْفَحُوا أَلَا تُحِبُّونَ أَن يَغْفِرَ اللَّهُ لَكُمْ﴾.',
+  'قال السعدي: «فقال أبو بكرٍ لمَّا سمع هذه الآية: بلى والله؛ إني لأحبُّ أن يَغْفِرَ الله لي، فَرَجَّعَ النفقةَ إلى مِسْطَحٍ».<br><br><b>العبرة:</b> سامح أبو بكر من أساء إليه، طمعًا في مغفرة الله.'
+ ]},
+ {h:'يوسف عليه السلام وإخوته',s:'مصدر القصة: سورة يوسف',p:[
+  'حسد الإخوةُ أخاهم يوسف، فألقوه في البئر وهو صغير، وفارق أباه سنواتٍ طويلة.',
+  'مرّت السنوات، وأصبح يوسف عزيز مصر، وجاءه إخوته محتاجين يطلبون الطعام.',
+  'كان يستطيع أن يعاقبهم، لكنه قال: ﴿لَا تَثْرِيبَ عَلَيْكُمُ الْيَوْمَ ۖ يَغْفِرُ اللَّهُ لَكُمْ ۖ وَهُوَ أَرْحَمُ الرَّاحِمِينَ﴾ [يوسف: ٩٢].',
+  '<b>العبرة:</b> «لا تثريب» أي: لا لوم ولا عتاب. سامحهم وهو قادر، ولم يذكّرهم بخطئهم.'
+ ]}
+];
+(function(){
+  var h=$('#stories');
+  STO.forEach(function(s){
+    var c=el('div','sheet story');
+    c.innerHTML='<h3>'+s.h+'</h3><p class="src">'+s.s+'</p><div style="margin-top:10px">'+
+      s.p.map(function(x,j){return '<p class="part'+(j?'':' on')+'">'+x+'</p>'}).join('')+'</div>'+
+      '<div class="ctr"><button class="btn alt prev" type="button" style="margin:0">السابق</button><div class="dots">'+
+      s.p.map(function(_,j){return '<i class="'+(j?'':'on')+'"></i>'}).join('')+'</div><button class="btn next" type="button" style="margin:0">التالي</button></div>';
+    h.appendChild(c);
+    var ps=c.querySelectorAll('.part'),ds=c.querySelectorAll('.dots i'),k=0;
+    function mv(d){k=Math.max(0,Math.min(ps.length-1,k+d));ps.forEach(function(p,j){p.classList.toggle('on',j===k)});ds.forEach(function(p,j){p.classList.toggle('on',j===k)})}
+    $('.prev',c).addEventListener('click',function(){mv(-1)});
+    $('.next',c).addEventListener('click',function(){mv(1)});
+  });
+})();
+
+/* scenarios */
+var CASES=[
+ {q:'أخذت زميلتك دفترك دون إذن وأعادته وفيه بعض الخربشات، ثم اعتذرت منك.',
+  o:[{t:'أقبل اعتذارها وأخبرها بلطف أن تستأذن في المرة القادمة.',c:1,m:'أحسنتِ! قبلتِ الاعتذار وعلّمتِها الأدب بلطف، وهذا هو العفو مع النصيحة.'},
+     {t:'أرفض الكلام معها طوال الأسبوع.',c:0,m:'الهجر يزيد المشكلة. تذكّري: «وخيرهما الذي يبدأ بالسلام».'},
+     {t:'آخذ دفترها وأخربش فيه مثلها.',c:0,m:'مقابلة الخطأ بالخطأ لا تُصلح شيئًا. ﴿ادْفَعْ بِالَّتِي هِيَ أَحْسَنُ﴾.'}]},
+ {q:'سمعتِ أن زميلة قالت عنك كلامًا غير لطيف أمام الأخريات.',
+  o:[{t:'أنشر عنها كلامًا أسوأ.',c:0,m:'هذا يزيد العداوة. السعدي يقول في تفسير آية فصلت: إن تكلّم فيك فلا تقابله، بل اعفُ عنه.'},
+     {t:'أكظم غيظي، وأتحدث معها بهدوء على انفراد.',c:1,m:'رائع! كظمتِ الغيظ، واخترتِ الحوار الهادئ. هذه قوة حقيقية.'},
+     {t:'أبكي وأحمل في قلبي عليها للأبد.',c:0,m:'من حقك أن تحزني، لكن الحقد يؤذي قلبك أنتِ. جرّبي الحديث معها أو مع المعلمة.'}]},
+ {q:'في حصة النشاط، دفعتك زميلة دون قصد فسقطتِ.',
+  o:[{t:'أصرخ عليها أمام الجميع.',c:0,m:'«ليس الشديد بالصُّرَعة، إنما الشديد الذي يملك نفسه عند الغضب».'},
+     {t:'أقوم، وأقول لها: لا بأس، أعرف أنك لم تقصدي.',c:1,m:'ما أجملك! هذا هو التسامح والسماحة في التعامل.'},
+     {t:'أدفعها أنا أيضًا.',c:0,m:'ردّ الإساءة بإساءة يحوّل اللعب إلى شجار.'}]},
+ {q:'زميلة جديدة في الدمج تتكلم ببطء، وبعض الطالبات يضحكن عليها.',
+  o:[{t:'أضحك معهن حتى لا يتركنني.',c:0,m:'السخرية تجرح القلوب. التسامح يعني قبول اختلاف الآخرين واحترامهم.'},
+     {t:'أجلس بجانبها، وأدعوها لتلعب معنا، وأطلب من الزميلات التوقف بلطف.',c:1,m:'أنتِ قدوة! التسامح يشمل الرفق بالآخرين وقبولهم كما هم.'},
+     {t:'لا أتدخل في الأمر.',c:0,m:'السكوت قد يُشعرها بالوحدة. كلمة طيبة منك قد تغيّر يومها.'}]}
+];
+function buildCards(host,list,tagWord,tagClass){
+  list.forEach(function(c,i){
+    var s=el('div',tagClass,'<span class="tag">'+tagWord+' '+['١','٢','٣','٤','٥','٦'][i]+'</span><p class="q-title" style="margin-top:6px">'+c.q+'</p><div class="opts"></div><div class="fb"></div>');
+    host.appendChild(s);
+    choice($('.opts',s),c.o,function(x,b){
+      markWrong(s,c.o,b,x);
+      var f=$('.fb',s);f.className='fb show '+(x.c?'g':'r');f.textContent=x.m;
+    });
+  });
+}
+buildCards($('#cases'),CASES,'موقف','sheet');
+
+/* inclusion */
+var INC=[
+ {q:'ما معنى التسامح مع طالبات التربية الخاصة؟',
+  o:[{t:'أ) الشفقة عليهن وتجاهل احتياجاتهن.',c:0,m:'ليست هذه. الشفقة وتجاهل الاحتياج ليسا من التسامح، والصحيح هو الاحترام والتقبّل ومراعاة الاحتياجات.'},
+     {t:'ب) احترامهن وتقبّلهن ومراعاة احتياجاتهن.',c:1,m:'إجابة صحيحة. الاحترام والتقبّل ومراعاة الاحتياج هو التسامح الحقيقي، وهن شريكات لنا في المدرسة.'},
+     {t:'ج) استبعادهن من الأنشطة المدرسية.',c:0,m:'ليست هذه. الاستبعاد ليس من التسامح، والصحيح هو الاحترام والتقبّل ومراعاة الاحتياجات.'}]},
+ {q:'زميلتك من طالبات الدمج تحتاج وقتًا أطول لتجيب أمام الفصل، وبعض الطالبات بدأن يتململن. ماذا تفعلين؟',
+  o:[{t:'أ) أنتظرها وأشجعها، وأذكّر زميلاتي بأن لكل واحدة منا إيقاعها.',c:1,m:'أحسنتِ. بصبرك وتشجيعك تمنحينها الثقة وتعلّمين زميلاتك التقبّل.'},
+     {t:'ب) أجيب عنها بسرعة لننتهي.',c:0,m:'الأفضل أن تنتظريها وتشجعيها. الإجابة مكانها تأخذ منها فرصتها.'},
+     {t:'ج) أنتظر المعلمة لتتصرف وأنا ساكتة.',c:0,m:'السكوت لا يساعدها. كلمة تشجيع منك تصنع فرقًا.'}]}
+];
+(function(){
+  var h=$('#incl');
+  h.innerHTML='<p class="lead">لكل طالبة قدراتها، والتسامح يعني أن نحترم الاختلاف ونفتح لزميلتنا مكانها بيننا.</p>';
+  INC.forEach(function(c,i){
+    var s=el('div','q-card','<span class="tag">سؤال '+['١','٢'][i]+'</span><p class="q-title" style="margin-top:6px">'+c.q+'</p><div class="opts"></div><div class="fb"></div>');
+    h.appendChild(s);
+    choice($('.opts',s),c.o,function(x,b){
+      markWrong(s,c.o,b,x);
+      var f=$('.fb',s);f.className='fb show '+(x.c?'g':'r');f.textContent=x.m;
+    });
+  });
+})();
+
+/* quiz */
+var QZ=[
+ {q:'التسامح يعني:',o:['السكوت عن كل خطأ مهما كان','ترك مؤاخذة المخطئ والعفو عنه مع القدرة','الخوف من الآخرين'],a:1,e:'التسامح عفوٌ عن قدرة، وليس ضعفًا ولا خوفًا.'},
+ {q:'أكملي الآية: ﴿وَالْكَاظِمِينَ الْغَيْظَ وَالْعَافِينَ عَنِ النَّاسِ ...﴾',o:['وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ','وَاللَّهُ غَفُورٌ رَحِيمٌ','وَاللَّهُ عَلِيمٌ حَكِيمٌ'],a:0,e:'آل عمران ١٣٤: من يكظم غيظه ويعفو ينال محبة الله.'},
+ {q:'الشديد القوي كما قال النبي ﷺ هو:',o:['الذي يغلب الناس في المصارعة','الذي يملك نفسه عند الغضب','الذي يصرخ بصوت عالٍ'],a:1,e:'«إنما الشديد الذي يملك نفسه عند الغضب» متفق عليه.'},
+ {q:'من الذي نزلت فيه آية ﴿وَلْيَعْفُوا وَلْيَصْفَحُوا﴾؟',o:['عمر بن الخطاب','أبو بكر الصديق','عثمان بن عفان'],a:1,e:'نزلت في أبي بكر لما حلف ألا ينفق على مسطح، فعفا عنه وأعاد النفقة.'},
+ {q:'إذا تخاصمت زميلتان، فخيرهما:',o:['التي تنتظر الأخرى','التي تبدأ بالسلام','التي تشتكي للجميع'],a:1,e:'«وخيرهما الذي يبدأ بالسلام» متفق عليه.'},
+ {q:'ماذا قال يوسف عليه السلام لإخوته؟',o:['﴿لَا تَثْرِيبَ عَلَيْكُمُ الْيَوْمَ﴾','سأعاقبكم','لن أسامحكم'],a:0,e:'يوسف: ٩٢، أي لا لوم ولا عتاب عليكم.'}
+];
+var qScore=0,qDone=0;
+function buildQuiz(){
+  var h=$('#quiz');h.innerHTML='';qScore=0;qDone=0;
+  $('#score').classList.remove('show');$('#quizReset').style.display='none';
+  QZ.forEach(function(c,i){
+    var s=el('div','sheet','<span class="tag">السؤال '+['١','٢','٣','٤','٥','٦'][i]+' من ٦</span><p class="q-title" style="margin-top:6px">'+c.q+'</p><div class="opts"></div><div class="fb"></div>');
+    h.appendChild(s);
+    choice($('.opts',s),c.o.map(function(t,k){return {t:t,c:k===c.a}}),function(x,b){
+      b.classList.add(x.c?'ok':'bad');
+      if(!x.c)s.querySelectorAll('.opt')[c.a].classList.add('ok');
+      var f=$('.fb',s);f.className='fb show '+(x.c?'g':'r');f.textContent=(x.c?'صحيح! ':'')+c.e;
+      if(x.c)qScore++;qDone++;
+      if(qDone===QZ.length){
+        var d=['٠','١','٢','٣','٤','٥','٦'];
+        var m=qScore===6?'ممتازة! أنتِ سفيرة التسامح.':qScore>=4?'أحسنتِ! معلوماتك رائعة.':'جيد، راجعي الصفحة وحاولي مرة أخرى.';
+        var sc=$('#score');sc.textContent='نتيجتك: '+d[qScore]+' من ٦. '+m;sc.classList.add('show');
+        $('#quizReset').style.display='inline-block';
+      }
+    });
+  });
+}
+$('#quizReset').addEventListener('click',function(){buildQuiz();$('#s-quiz').scrollIntoView({behavior:'smooth'})});
+buildQuiz();
+
+/* pledge */
+var PL=[
+ 'أبدأ زميلتي بالسلام إذا اختلفنا',
+ 'أكظم غيظي وأتكلم بهدوء',
+ 'أعتذر إذا أخطأت، وأقبل اعتذار غيري',
+ 'لا أسخر من زميلاتي ولا أنشر أخطاءهن',
+ 'أحسن إلى من أساء إليّ',
+ 'أحترم زميلاتي من طالبات الدمج وأقبل اختلاف قدراتهن'
+];
+(function(){
+  var h=$('#pledgeList');
+  PL.forEach(function(t,i){h.appendChild(el('label','chk','<input type="checkbox" id="pl'+i+'"><span>'+t+'</span>'))});
+  $('#sign').addEventListener('click',function(){
+    var n=$('#pname').value.trim(),err=$('#perr'),picked=[];
+    PL.forEach(function(t,i){if($('#pl'+i).checked)picked.push(t)});
+    if(!n){err.textContent='اكتبي اسمك أولًا.';err.classList.add('show');$('#pname').focus();return}
+    if(!picked.length){err.textContent='اختاري بندًا واحدًا على الأقل.';err.classList.add('show');return}
+    err.classList.remove('show');
+    $('#pcName').textContent=n;
+    $('#pcList').innerHTML=picked.map(function(t){return '<li>'+t+'</li>'}).join('');
+    var c=$('#pcard');c.classList.add('show');c.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+})();
+</script>
+</body>
+</html>
